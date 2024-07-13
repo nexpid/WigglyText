@@ -6,68 +6,82 @@
 
 import { definePluginSettings } from "@api/Settings";
 import { makeRange } from "@components/PluginSettings/components";
-import { EquicordDevs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { ReactNode } from "react";
 
 const settings = definePluginSettings({
     intensity: {
-        description: "Animation intensity in px",
         type: OptionType.SLIDER,
-        default: 4,
+        description: "Animation intensity in px",
         markers: makeRange(1, 10, 1),
+        default: 4,
         stickToMarkers: true,
         onChange: () => updateStyles()
     },
+    direction: {
+        type: OptionType.SELECT,
+        description: "Swing direction",
+        options: [{
+            label: "Circle",
+            value: "xy",
+            default: true
+        }, {
+            label: "Horizontal",
+            value: "x",
+        }, {
+            label: "Vertical",
+            value: "y"
+        }],
+        onChange: () => updateStyles()
+    }
 });
+
+const dirMap = {
+    x: "0.6s wiggle-wavy-x alternate ease-in-out infinite",
+    y: "1.2s wiggle-wavy-y linear infinite"
+};
 
 let styles: HTMLStyleElement;
 const updateStyles = () => {
     const inten = Vencord.Settings.plugins.WigglyText.intensity + "px";
+    const dir = Vencord.Settings.plugins.WigglyText.direction as string;
     styles.textContent = `
         .wiggly-inner {
-            animation: 1.2s wiggle-wavy-x ease-in-out infinite,
-                1.2s wiggle-wavy-y ease-in-out infinite;
+            animation: ${dir.split("").map(dir => dirMap[dir]).join(", ")};
             position: relative;
             top: 0;
             left: 0;
         }
 
         @keyframes wiggle-wavy-x {
-            0% {
-                left: -${inten};
+            from {
+                left: -${inten}
             }
 
-            50% {
+            to {
                 left: ${inten};
-            }
-
-            100% {
-                left: -${inten};
             }
         }
 
         @keyframes wiggle-wavy-y {
             0% {
+                top: 0;
                 animation-timing-function: ease-out;
             }
 
             25% {
-                top: ${inten};
-                animation-timing-function: ease-in;
-            }
-
-            50% {
-                animation-timing-function: ease-out;
-            }
-
-            75% {
                 top: -${inten};
                 animation-timing-function: ease-in;
             }
 
-            100% {
+            50% {
+                top: 0;
                 animation-timing-function: ease-out;
+            }
+
+            75% {
+                top: ${inten};
+                animation-timing-function: ease-in;
             }
         }`;
 };
@@ -75,7 +89,10 @@ const updateStyles = () => {
 export default definePlugin({
     name: "WigglyText",
     description: "Adds a new markdown formatting that makes text ~wiggly~",
-    authors: [EquicordDevs.nexpid],
+    authors: [{
+        name: "Nexpid",
+        id: 853550207039832084n
+    }],
     settings,
 
     patches: [
@@ -118,8 +135,6 @@ export default definePlugin({
                                     className="wiggly-inner"
                                     style={{
                                         animationDelay: `${((offset++) * 25) % 1200}ms`,
-                                        ["--intensity" as any]: "4px",
-                                        ["--intensity-neg" as any]: "-4px",
                                     }}
                                 >
                                     {x}
