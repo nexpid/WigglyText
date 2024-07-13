@@ -55,7 +55,7 @@ const updateStyles = () => {
 
         @keyframes wiggle-wavy-x {
             from {
-                left: -${inten}
+                left: -${inten};
             }
 
             to {
