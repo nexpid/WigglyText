@@ -82,8 +82,8 @@ export default definePlugin({
         {
             find: "parseToAST:",
             replacement: {
-                match: /parse:(.*?)\((\i)\),/,
-                replace: "parse:$1({...$2,wiggly:$self.wigglyRule}),",
+                match: /(parse[\w]*):(.*?)\((\i)\),/g,
+                replace: "$1:$2({...$3,wiggly:$self.wigglyRule}),",
             },
         },
     ],
