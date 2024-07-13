@@ -1,9 +1,12 @@
 # Wiggly Text
 
 It wiggles!  
-A Vencord userplugin that adds a new ~markdown formatting~ that makes text wiggle. Inspired by [GDColon's Tweet](https://x.com/TheRealGDColon/status/1811953446330777683)
+A Vencord userplugin that adds a new markdown formatting that makes text wiggle. Inspired by [GDColon's Tweet](https://x.com/TheRealGDColon/status/1811953446330777683)
 
-![](preview.gif)
+## How 2 use
+
+Just type `~text~` and it will wiggle!
+![Text wiggling](preview.gif)
 
 ## Installation
 
