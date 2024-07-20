@@ -11,11 +11,10 @@ Just type `~text~` and it will wiggle!
 
 ## Installation
 
-[How to install Vencord](https://vencord.dev/download/)  
-[How to use a custom Vencord build](https://docs.vencord.dev/installing/)
+Install using the official [Vencord documentation](https://docs.vencord.dev/installing/custom-plugins/)
 
-```sh
-# in your Vencord folder
-git clone https://github.com/nexpid/WigglyText.git src/userplugins/WigglyText
-pnpm build
-```
+<details>
+  <summary>OR</summary>
+  
+  Use [Equicord](https://github.com/Equicord), a fork of Vencord, which has the plugin built-in!
+</details>
