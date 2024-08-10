@@ -8,11 +8,11 @@ Adds a new markdown formatting that makes text wiggly. Inspired by [GDColon's Tw
 
 ## How to use
 
-You can make text wiggle in 3 directions:
+You can make the text wiggle with the following:
 
-- Horizontal — `<~Text~>`
-- Vertical — `^~Text~^`
-- Circular — `)~Text~(`
+- left and right by typing `<~text~>`
+- up and down by typing `^~text~^`
+- in a circle by typing `)~text~(`
 
 ## Installation
 

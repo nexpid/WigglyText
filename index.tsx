@@ -7,7 +7,10 @@
 import { definePluginSettings } from "@api/Settings";
 import { makeRange } from "@components/PluginSettings/components";
 import definePlugin, { OptionType } from "@utils/types";
+import { Text } from "@webpack/common";
 import { ReactNode } from "react";
+
+import ExampleWiggle from "./ui/components/ExampleWiggle";
 
 const settings = definePluginSettings({
     intensity: {
@@ -44,6 +47,17 @@ let styles: HTMLStyleElement;
 const updateStyles = () => {
     const inten = Vencord.Settings.plugins.WigglyText.intensity + "px";
     styles.textContent = `
+.wiggle-example {
+    list-style-type: disc;
+    list-style-position: outside;
+    margin: 4px 0 0 16px;
+}
+
+.wiggle-example li {
+    white-space: break-spaces;
+    margin-bottom: 4px;
+}
+
 .wiggle-inner {
     position: relative;
     top: 0;
@@ -103,6 +117,16 @@ export default definePlugin({
         id: 853550207039832084n
     }],
     settings,
+    settingsAboutComponent: () => (
+        <Text>
+            You can make text wiggle with the following:<br />
+            <ul className="wiggle-example">
+                <li><ExampleWiggle wiggle="x">left and right</ExampleWiggle> by typing <code>&lt;~text~&gt;</code></li>
+                <li><ExampleWiggle wiggle="y">up and down</ExampleWiggle> by typing <code>^~text~^</code></li>
+                <li><ExampleWiggle wiggle="xy">in a circle</ExampleWiggle> by typing <code>)~text~(</code></li>
+            </ul>
+        </Text>
+    ),
 
     patches: [
         {
