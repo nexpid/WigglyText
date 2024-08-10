@@ -17,22 +17,6 @@ const settings = definePluginSettings({
         default: 4,
         stickToMarkers: true,
         onChange: () => updateStyles()
-    },
-    direction: {
-        type: OptionType.SELECT,
-        description: "Swing direction",
-        options: [{
-            label: "Circle",
-            value: "xy",
-            default: true
-        }, {
-            label: "Horizontal",
-            value: "x",
-        }, {
-            label: "Vertical",
-            value: "y"
-        }],
-        onChange: () => updateStyles()
     }
 });
 
@@ -41,54 +25,79 @@ const dirMap = {
     y: "1.2s wiggle-wavy-y linear infinite"
 };
 
+const classMap = [
+    {
+        chars: ["<", ">"],
+        className: "wiggle-inner-x",
+    },
+    {
+        chars: ["^", "^"],
+        className: "wiggle-inner-y",
+    },
+    {
+        chars: [")", "("],
+        className: "wiggle-inner-xy"
+    }
+];
+
 let styles: HTMLStyleElement;
 const updateStyles = () => {
     const inten = Vencord.Settings.plugins.WigglyText.intensity + "px";
-    const dir = Vencord.Settings.plugins.WigglyText.direction as string;
     styles.textContent = `
-        .wiggly-inner {
-            animation: ${dir.split("").map(dir => dirMap[dir]).join(", ")};
-            position: relative;
-            top: 0;
-            left: 0;
-        }
+.wiggle-inner {
+    position: relative;
+    top: 0;
+    left: 0;
 
-        @keyframes wiggle-wavy-x {
-            from {
-                left: -${inten};
-            }
+    &.wiggle-inner-x {
+        animation: ${dirMap.x};
+    }
 
-            to {
-                left: ${inten};
-            }
-        }
+    &.wiggle-inner-y {
+        animation: ${dirMap.y};
+    }
 
-        @keyframes wiggle-wavy-y {
-            0% {
-                top: 0;
-                animation-timing-function: ease-out;
-            }
+    &.wiggle-inner-xy {
+        animation: ${dirMap.x}, ${dirMap.y};
+    }
+}
 
-            25% {
-                top: -${inten};
-                animation-timing-function: ease-in;
-            }
+@keyframes wiggle-wavy-x {
+    from {
+        left: -${inten};
+    }
 
-            50% {
-                top: 0;
-                animation-timing-function: ease-out;
-            }
+    to {
+        left: ${inten};
+    }
+}
 
-            75% {
-                top: ${inten};
-                animation-timing-function: ease-in;
-            }
-        }`;
+@keyframes wiggle-wavy-y {
+    0% {
+        top: 0;
+        animation-timing-function: ease-out;
+    }
+
+    25% {
+        top: -${inten};
+        animation-timing-function: ease-in;
+    }
+
+    50% {
+        top: 0;
+        animation-timing-function: ease-out;
+    }
+
+    75% {
+        top: ${inten};
+        animation-timing-function: ease-in;
+    }
+}`;
 };
 
 export default definePlugin({
     name: "WigglyText",
-    description: "Adds a new markdown formatting that makes text ~wiggly~",
+    description: "Adds a new markdown formatting that makes text wiggly.",
     authors: [{
         name: "Nexpid",
         id: 853550207039832084n
@@ -107,16 +116,21 @@ export default definePlugin({
 
     wigglyRule: {
         order: 24,
-        match: (source: string) => source.match(/^~([\s\S]+?)~(?!_)/),
+        match: (source: string) => classMap.map(({ chars }) => source.match(new RegExp(`^(\\${chars[0]})~([\\s\\S]+?)~(\\${chars[1]})(?!_)`))).find(x => x !== null),
         parse: (
             capture: RegExpMatchArray,
             transform: (...args: any[]) => any,
             state: any
-        ) => ({
-            content: transform(capture[1], state),
-        }),
+        ) => {
+            const className = classMap.find(({ chars }) => chars[0] === capture[1] && chars[1] === capture[3])?.className ?? "";
+
+            return {
+                content: transform(capture[2], state),
+                className
+            };
+        },
         react: (
-            data: { content: any[]; },
+            data: { content: any[]; className: string; },
             output: (...args: any[]) => ReactNode[]
         ) => {
             let offset = 0;
@@ -132,7 +146,7 @@ export default definePlugin({
                         children[j] = child.split("").map((x, i) => (
                             <span key={i}>
                                 <span
-                                    className="wiggly-inner"
+                                    className={`wiggle-inner ${data.className}`}
                                     style={{
                                         animationDelay: `${((offset++) * 25) % 1200}ms`,
                                     }}
