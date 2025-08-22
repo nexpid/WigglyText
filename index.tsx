@@ -5,8 +5,7 @@
  */
 
 import { definePluginSettings } from "@api/Settings";
-import { makeRange } from "@components/PluginSettings/components";
-import definePlugin, { OptionType } from "@utils/types";
+import definePlugin, { makeRange, OptionType } from "@utils/types";
 import { Text } from "@webpack/common";
 import { ReactNode } from "react";
 
